@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.appengine.api.datastore.Key;
 import com.google.code.twig.util.reference.ObjectReference;
 import com.google.code.twig.util.reference.SimpleObjectReference;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
 
 // TODO make this the base class of translator object datastore
 public class KeyInstanceCache
@@ -28,18 +28,30 @@ public class KeyInstanceCache
 	// Key is looked up by using equals() 
 	// concurrency is not needed so set to 1
 	// TODO replace this with CacheMaker
-	private Map<Key, Object> keyToInstance = new MapMaker()
-		.weakValues()
-		.concurrencyLevel(1)
-		.makeMap();
+	private Map<Key, Object> keyToInstance = createKeyToInstanceMap();
+
+  private static Map<Key, Object> createKeyToInstanceMap() {
+    CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
+    cacheBuilder
+            .weakValues()
+            .concurrencyLevel(1);
+
+    return cacheBuilder.build().asMap();
+  }
 
 	// weak keys remove the value (Key) when instance not needed
 	// better than WeakHashMap because uses identity key comparison
 	// use a reference so we can hold a Key or a KeySpecification
-	private Map<Object, KeyReference> instanceToKeyReference = new MapMaker()
-		.weakKeys()
-		.concurrencyLevel(1)
-		.makeMap();
+	private Map<Object, KeyReference> instanceToKeyReference = createInstanceToKeyReferenceMap();
+
+  private static Map<Object, KeyReference> createInstanceToKeyReferenceMap() {
+    CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
+    cacheBuilder
+            .weakKeys()
+            .concurrencyLevel(1);
+
+    return cacheBuilder.build().asMap();
+  }
 
 	/**
 	 * Used for both encoding and decoding. During decoding this is
@@ -84,11 +96,13 @@ public class KeyInstanceCache
 	 */
 	public void rehashKeys()
 	{
-		ConcurrentMap<Key, Object> replacement = new MapMaker()
-			.weakValues()
-			.concurrencyLevel(1)
-			.makeMap();
-		
+    CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
+    cacheBuilder
+            .weakValues()
+            .concurrencyLevel(1);
+
+    ConcurrentMap<Key, Object> replacement = cacheBuilder.build().asMap();
+
 		replacement.putAll(keyToInstance);
 		
 		keyToInstance = replacement;

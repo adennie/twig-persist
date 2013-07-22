@@ -31,10 +31,10 @@ import com.google.code.twig.PropertyTranslator;
 import com.google.code.twig.util.Pair;
 import com.google.code.twig.util.reference.ObjectReference;
 import com.google.common.base.Predicate;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.MapMaker;
 
 abstract class StandardCommonFindCommand<C extends StandardCommonFindCommand<C>> extends StandardRestrictedFindCommand<C> implements FindCommand.MergeFindCommand
 {
@@ -235,14 +235,20 @@ abstract class StandardCommonFindCommand<C extends StandardCommonFindCommand<C>>
 		return depth < 0;
 	}
 
-	// TODO replace this with stick and make cache options
-	@SuppressWarnings("deprecation")
-	private static final Map<Query, List<Key>> queryToEntities = new MapMaker()
-		.concurrencyLevel(10)
-		.expireAfterWrite(10, TimeUnit.MINUTES)
-		.maximumSize(1000)
-		.softValues()
-		.makeMap();
+  // TODO replace this with stick and make cache options
+  @SuppressWarnings("deprecation")
+  private static final Map<Query, List<Key>> queryToEntities = create();
+
+  private static Map<Query, List<Key>> create() {
+
+    CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
+    cacheBuilder.concurrencyLevel(10)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .maximumSize(1000)
+            .softValues();
+
+    return cacheBuilder.build().asMap();
+  }
 
 	protected QueryResultIterator<Entity> nowSingleQueryEntities(Query query)
 	{

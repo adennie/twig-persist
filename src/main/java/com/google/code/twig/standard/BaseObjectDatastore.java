@@ -35,8 +35,8 @@ import com.google.code.twig.ObjectDatastore;
 import com.google.code.twig.Settings;
 import com.google.code.twig.Work;
 import com.google.common.base.Predicates;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AbstractFuture;
 
@@ -113,20 +113,19 @@ public abstract class BaseObjectDatastore implements ObjectDatastore
 		if (maximum >= 0)
 		{
 			// 10 concurrent threads will not be all updating at the same time
-			MapMaker maker = new MapMaker()
-				.concurrencyLevel(5)
-				.softValues();
+      CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
+      cacheBuilder.concurrencyLevel(5).softValues();
 
-			if (seconds > 0)
-			{
-				maker.expiration(seconds, TimeUnit.SECONDS);
-			}
-			if (maximum > 0)
-			{
-				maker.maximumSize(maximum);
-			}
+      if (seconds > 0)
+      {
+        cacheBuilder.expireAfterWrite(seconds, TimeUnit.SECONDS);
+      }
+      if (maximum > 0)
+      {
+        cacheBuilder.maximumSize(maximum);
+      }
 
-			cache = maker.makeMap();
+      cache = cacheBuilder.build().asMap();
 		}
 
 		kindToCache.put(kind, new CacheDetails(cache, seconds, maximum, automatic, global));
