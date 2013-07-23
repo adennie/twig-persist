@@ -214,16 +214,9 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 				throw new UnsupportedOperationException("Backup multiple instances not implemented");
 			}
 			
-			// check instance was not stored while storing another instance
-			Entity entity = null;
+			// TODO check instance was not stored while storing another instance
+			Entity entity = instanceToEntity(instance, parentKey, null);
 			
-			// get if we update or we are doing a store and still don't have key
-			if (isUpdateCommand(instance) || datastore.associatedKey(instance) == null)
-			{
-				// cannot define a key name
-				entity = instanceToEntity(instance, parentKey, null);
-			}
-
 			// put null if instance was already stored - don't store again
 			entities.put(instance, entity);
 			
