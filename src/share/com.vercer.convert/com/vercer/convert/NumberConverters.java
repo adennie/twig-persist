@@ -50,6 +50,13 @@ public class NumberConverters implements Iterable<Converter<?, ?>>
 				return Short.valueOf(source.shortValue());
 			}
 		});
+		converters.add(new Converter<Number, Byte>()
+		{
+			public Byte convert(Number source)
+			{
+				return Byte.valueOf(source.byteValue());
+			}
+		});
 		converters.add(new Converter<Number, BigInteger>()
 		{
 			public BigInteger convert(Number source)

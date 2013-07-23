@@ -42,6 +42,13 @@ public class StringToPrimitive implements Iterable<Converter<?, ?>>
 				return Double.valueOf(source);
 			}
 		});
+		converters.add(new Converter<String, Short>()
+		{
+			public Short convert(String source)
+			{
+				return Short.valueOf(source);
+			}
+		});
 		converters.add(new Converter<String, Byte>()
 		{
 			public Byte convert(String source)
