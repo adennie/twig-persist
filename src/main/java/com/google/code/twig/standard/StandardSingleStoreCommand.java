@@ -45,7 +45,7 @@ public final class StandardSingleStoreCommand<T> extends StandardCommonStoreComm
 		updateInstanceState(instance, key, datastore);
 		
 		// when associating we might not activate the instance
-		if (!command.update)
+		if (!isUpdateCommand(instance))
 		{
 			// store always uses version 1 for activated
 			datastore.keyCache.cache(key, instance, 1);

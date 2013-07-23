@@ -189,6 +189,17 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 			}
 		};
 	}
+    
+    protected boolean isUpdateCommand(Object instance)
+    {
+        if (command.update == null) {
+            // check the action, based off of the instance - if we are both associated and activated, then we can
+            // do an update.
+            return (datastore.isAssociated(instance) && datastore.isActivated(instance));
+        } else {
+            return command.update;
+        }
+    }
 
 	final Map<Object, Entity> instancesToEntities()
 	{
@@ -207,7 +218,7 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 			Entity entity = null;
 			
 			// get if we update or we are doing a store and still don't have key
-			if (command.update || datastore.associatedKey(instance) == null)
+			if (isUpdateCommand(instance) || datastore.associatedKey(instance) == null)
 			{
 				// cannot define a key name
 				entity = instanceToEntity(instance, parentKey, null);
@@ -265,7 +276,7 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 			assert datastore.associating == false;
 			
 			// the key is now complete for this activated instance
-			if (!command.update)
+			if (!isUpdateCommand(instance))
 			{
 				// store always starts with version 1 for activated
 				datastore.keyCache.cache(key, instance, 1);
@@ -440,7 +451,7 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 		datastore.encodeKeyDetails = new KeyDetails(kind, parentKey, id);
 
 		// if we are updating the key is already in the key cache
-		if (command.update || datastore.isAssociated(instance))
+		if (isUpdateCommand(instance) || datastore.isAssociated(instance))
 		{
 			// get the key associated with this instance
 			Key associatedKey = datastore.associatedKey(instance);
@@ -505,7 +516,7 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 		Entity entity = createEntity();
 
 		// check we will not over write another entity
-		if (!command.update && // only check when storing 
+		if (!isUpdateCommand(instance) && // only check when storing 
 			cascaded == null && // we can over write when cascading
 			!datastore.associating && // associate can return an existing instance
 			datastore.associatedInstance(entity.getKey()) != null)

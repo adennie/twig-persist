@@ -10,7 +10,7 @@ public class StandardStoreCommand extends StandardCommand implements StoreComman
 	/**
 	 * True for update, False for store, null for update or store
 	 */
-	protected boolean update;
+	protected Boolean update = Boolean.FALSE;
 	protected String versionPropertyName;
 
 	protected StandardStoreCommand(TranslatorObjectDatastore datastore)
@@ -33,7 +33,7 @@ public class StandardStoreCommand extends StandardCommand implements StoreComman
 		return new StandardMultipleStoreCommand<T>(this, Arrays.asList(instances));
 	}
 
-	public StandardStoreCommand update(boolean update)
+	public StandardStoreCommand update(Boolean update)
 	{
 		this.update = update;
 		return this;

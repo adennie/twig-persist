@@ -177,7 +177,7 @@ public abstract class TranslatorObjectDatastore extends BaseObjectDatastore
 	@Override
 	public StandardStoreCommand store()
 	{
-		return new StandardStoreCommand(this).update(false);
+		return new StandardStoreCommand(this).update(Boolean.FALSE);
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public abstract class TranslatorObjectDatastore extends BaseObjectDatastore
 		assert instance != null;
 
 		// store but set the internal update flag
-		store().update(true)
+		store().update(Boolean.TRUE)
 			.instance(instance)
 			.cascaded(cascade ? new HashSet<Object>() : null)
 			.date(cascade ? new Date() : null)
@@ -270,7 +270,7 @@ public abstract class TranslatorObjectDatastore extends BaseObjectDatastore
 		assert instances != null;
 		
 		// store but set the internal update flag
-		store().update(true)
+		store().update(Boolean.TRUE)
 			.instances(instances)
 			.cascaded(cascade ? new HashSet<Object>() : null)
 			.date(cascade ? new Date() : null)
