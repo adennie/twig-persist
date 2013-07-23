@@ -282,7 +282,7 @@ abstract class StandardCommonStoreCommand<T, C extends StandardCommonStoreComman
 				datastore.keyCache.cache(key, instance, 1);
 			}
 		}
-		return (Map<T, Key>) result;
+		return new HashMap((Map<T, Key>) result);
 	}
 
 	protected Key instanceToKey(Object instance, Object id)
