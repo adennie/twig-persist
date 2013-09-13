@@ -115,7 +115,7 @@
                     <quiet>true</quiet>
                     <failOnError>false</failOnError>
                     <sourcepath>
-                        src/main/java:src/share/com.vercer.convert:src/share/conm.vercer.util
+                        src/main/java:src/share/com.vercer.convert:src/share/com.vercer.util
                     </sourcepath>
                 </configuration>
             </plugin>
