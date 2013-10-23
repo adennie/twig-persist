@@ -8,7 +8,7 @@
     <name>Twig</name>
 
 	<properties>
-		<appengine.version>1.8.2</appengine.version>
+		<appengine.version>1.8.6</appengine.version>
 		<guice.version>3.0</guice.version>
 	</properties>
 
@@ -16,7 +16,7 @@
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		    <version>14.0</version>
+		    <version>15.0</version>
 		</dependency>
 
 		<dependency>
